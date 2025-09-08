@@ -6,11 +6,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce;
 
     [SerializeField] private float groundRayDistance;
+
     private Rigidbody2D body;
     private SpriteRenderer spriteRenderer;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform leftFoot;
-    [SerializeField] private Transform rightFoot;
+    private LayerMask groundLayer;
+    private Transform leftFoot;
+    private Transform rightFoot;
+    private Animator anim;
 
     private float horizontalInput;
 
@@ -18,11 +20,17 @@ public class PlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        groundLayer = LayerMask.GetMask("Ground");
+        leftFoot = transform.Find("LeftFoot");
+        rightFoot = transform.Find("RightFoot");
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
+        anim.SetFloat("Horizontal Velocity", Mathf.Abs(body.linearVelocityX));
+        anim.SetFloat("Vertical Velocity", Mathf.Abs(body.linearVelocityY));
 
 
         if (horizontalInput < 0)
@@ -35,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
         
         if (Input.GetButtonDown("Jump") && CheckGrounded())
         {
-            print(body != null);
             body.AddForceY(jumpForce, ForceMode2D.Impulse);
         }
     }
@@ -46,7 +53,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool CheckGrounded()
     {
-        //Debug.DrawRay(leftFoot.position, Vector2.down * groundRayDistance, Color.red, 0.1f);
 
         RaycastHit2D leftHit = Physics2D.Raycast(leftFoot.position, Vector2.down, groundRayDistance, groundLayer);
         if (leftHit.collider != null)
@@ -56,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
         RaycastHit2D rightHit = Physics2D.Raycast(rightFoot.position, Vector2.down, groundRayDistance, groundLayer);
         if (rightHit.collider != null) 
-        { 
+        {
             return true; 
         }
 
