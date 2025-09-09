@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private float horizontalInput;
+    private bool isGrounded;
 
     void Start()
     {
@@ -29,9 +30,13 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        anim.SetFloat("Horizontal Velocity", Mathf.Abs(body.linearVelocityX));
-        anim.SetFloat("Vertical Velocity", Mathf.Abs(body.linearVelocityY));
+        isGrounded = CheckGrounded();
 
+        anim.SetFloat("Horizontal Velocity", Mathf.Abs(body.linearVelocityX));
+        anim.SetFloat("Vertical Velocity", body.linearVelocityY);
+        anim.SetBool("Is Grounded", isGrounded);
+
+        print(Mathf.Abs(body.linearVelocityY) > 0.1);
 
         if (horizontalInput < 0)
         {
@@ -41,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
         }
         
-        if (Input.GetButtonDown("Jump") && CheckGrounded())
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             body.AddForceY(jumpForce, ForceMode2D.Impulse);
         }
@@ -63,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit2D rightHit = Physics2D.Raycast(rightFoot.position, Vector2.down, groundRayDistance, groundLayer);
         if (rightHit.collider != null) 
         {
-            return true; 
+            return true;
         }
 
         return false;
