@@ -13,8 +13,10 @@ public class PlayerMovement : MonoBehaviour
     private Transform leftFoot;
     private Transform rightFoot;
     private Animator anim;
+    private CameraScript cameraScript;
 
     private float horizontalInput;
+    private float verticalInput;
     private bool isGrounded;
 
     void Start()
@@ -25,11 +27,13 @@ public class PlayerMovement : MonoBehaviour
         leftFoot = transform.Find("LeftFoot");
         rightFoot = transform.Find("RightFoot");
         anim = GetComponent<Animator>();
+        cameraScript = GameObject.Find("Main Camera").GetComponent<CameraScript>();
     }
 
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
         isGrounded = CheckGrounded();
 
         anim.SetFloat("Horizontal Velocity", Mathf.Abs(body.linearVelocityX));
@@ -41,11 +45,25 @@ public class PlayerMovement : MonoBehaviour
         if (horizontalInput < 0)
         {
             spriteRenderer.flipX = true;
+            cameraScript.offset = new Vector3(-Mathf.Abs(cameraScript.maxOffset.x), 0, -10);
         } else if (horizontalInput > 0)
         {
             spriteRenderer.flipX = false;
+            cameraScript.offset = new Vector3(Mathf.Abs(cameraScript.maxOffset.x), 0, -10);
         }
-        
+
+        if (verticalInput < 0)
+        {
+            cameraScript.offset.y = -cameraScript.maxOffset.y;
+        }
+        else if (verticalInput > 0)
+        {
+            cameraScript.offset.y = cameraScript.maxOffset.y;
+        } else
+        {
+            cameraScript.offset.y = 0;
+        }
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             body.AddForceY(jumpForce, ForceMode2D.Impulse);
