@@ -107,11 +107,11 @@ public class PlayerMovement : MonoBehaviour
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
-            KillUnit();
+            KillPlayer();
         }
     }
 
-    private void KillUnit()
+    private void KillPlayer()
     {
         transform.position = respawnPosition;
         currentHealth = maxHealth;
