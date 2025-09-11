@@ -4,7 +4,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float playerSpeed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private int maxHealth;
 
+    private Vector3 respawnPosition;
     [SerializeField] private float groundRayDistance;
 
     private Rigidbody2D body;
@@ -18,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
     private bool isGrounded;
+    private int currentHealth;
 
     void Start()
     {
@@ -28,6 +31,9 @@ public class PlayerMovement : MonoBehaviour
         rightFoot = transform.Find("RightFoot");
         anim = GetComponent<Animator>();
         cameraScript = GameObject.Find("Main Camera").GetComponent<CameraScript>();
+        respawnPosition = transform.position;
+
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -90,5 +96,24 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return false;
+    }
+    
+    public void TakeDamage()
+    {
+        TakeDamage(1);
+    }
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            KillUnit();
+        }
+    }
+
+    private void KillUnit()
+    {
+        transform.position = respawnPosition;
+        currentHealth = maxHealth;
     }
 }
