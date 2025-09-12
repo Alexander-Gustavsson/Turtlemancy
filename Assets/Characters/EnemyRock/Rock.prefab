@@ -50,6 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1
+  bounceForce: 8
+  knockback: 6
+  stunOnHit: 0.2
 --- !u!212 &8209966225635850946
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -234,5 +237,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7, y: 0.1}
+  m_Size: {x: 0.8, y: 0.1}
   m_EdgeRadius: 0

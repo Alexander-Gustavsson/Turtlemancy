@@ -7,14 +7,17 @@ public class CameraScript : MonoBehaviour
     [SerializeField] private float zoomRate;
     [SerializeField] public Vector3 maxOffset;
     [SerializeField] public Vector3 offset;
+    [SerializeField] private Color backgroundColor;
     private float targetCameraSize;
 
     private Camera myCamera;
 
     void Start()
     {
-        targetPosition = GameObject.Find("Player").transform;
+        targetPosition = GameObject.FindGameObjectWithTag("Player").transform;
         myCamera = GetComponent<Camera>();
+
+        myCamera.backgroundColor = backgroundColor;
 
         ZoomOut();
     }

@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 365137702817854228}
   - component: {fileID: 6011182524128222529}
   - component: {fileID: 8518008185617878033}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -112,9 +112,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70458efc9096f3e4c90342199607c859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 2.42
+  playerSpeed: 4
+  playerAcceleration: 3
   jumpForce: 8
+  maxHealth: 5
   groundRayDistance: 0.25
+  greenHealth: {r: 0.11475258, g: 0.85660374, b: 0.14440343, a: 0}
+  redHealth: {r: 0.93207544, g: 0.08969026, b: 0.20360847, a: 0}
+  isStunned: 0
+  currentHealth: 0
 --- !u!50 &7011657811021261824
 Rigidbody2D:
   serializedVersion: 5
@@ -130,8 +136,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_GravityScale: 1.5
+  m_Material: {fileID: 6200000, guid: b0dafbc6366f5144fb5cece7f1c0fa7c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -185,7 +191,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -6367560908665664636, guid: 3d818d986de3faf478096512a68f7e1a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

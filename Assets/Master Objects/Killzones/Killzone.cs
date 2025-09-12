@@ -14,8 +14,7 @@ public class Killzone : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            collision.transform.position = spawnPosition.position;
-            cameraScript.ZoomIn(collision.transform, true);
+            collision.GetComponent<PlayerMovement>().KillPlayer();
         }
     }
 }
