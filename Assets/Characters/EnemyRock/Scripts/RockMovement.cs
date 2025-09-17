@@ -7,8 +7,11 @@ public class RockMovement : MonoBehaviour
     [SerializeField] private float bounceForce;
     [SerializeField] private float knockback;
     [SerializeField] private float stunOnHit;
+    [SerializeField] private Animator anim;
     private SpriteRenderer sprite;
     private readonly string[] reverserTags = {"EnemyBlocker", "Enemy"};
+
+    [SerializeField] private GameObject blood;
 
     private void Start()
     {
@@ -53,7 +56,22 @@ public class RockMovement : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<Rigidbody2D>().linearVelocityY = 6;
-            Destroy(gameObject);
+
+            anim.SetTrigger("Hit");
+
+            GetComponent<Rigidbody2D>().gravityScale = 0;
+            GetComponent<Collider2D>().enabled = false;
+            GetComponent<Collider2D>().enabled = false;
+            moveSpeed = 0;
+
+            Instantiate(blood, transform.position, Quaternion.identity);
+
+            Invoke("TurnOff", 0.6f);
         }
+    }
+
+    private void TurnOff()
+    {
+        gameObject.SetActive(false);
     }
 }

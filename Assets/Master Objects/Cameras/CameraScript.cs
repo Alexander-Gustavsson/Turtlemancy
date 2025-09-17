@@ -1,23 +1,29 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
     private Transform targetPosition;
+    private Transform playerTransform;
     [SerializeField] private float cameraSpeed;
     [SerializeField] private float zoomRate;
+    [SerializeField] private float smallFOV;
+    [SerializeField] private float largeFOV;
+    [SerializeField] private Vector3 defaultMaxOffset;
     [SerializeField] public Vector3 maxOffset;
     [SerializeField] public Vector3 offset;
-    [SerializeField] private Color backgroundColor;
-    private float targetCameraSize;
+    private float targetFOV;
 
     private Camera myCamera;
 
+    private Coroutine playerReturner;
+
     void Start()
     {
-        targetPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        targetPosition = playerTransform;
         myCamera = GetComponent<Camera>();
-
-        myCamera.backgroundColor = backgroundColor;
 
         ZoomOut();
     }
@@ -27,8 +33,8 @@ public class CameraScript : MonoBehaviour
         Vector3 newPosition = Vector3.Lerp(transform.position, targetPosition.position + offset, cameraSpeed * Time.deltaTime);
         transform.position = newPosition;
 
-        float newSize = Mathf.Lerp(myCamera.orthographicSize, targetCameraSize, zoomRate * Time.deltaTime);
-        myCamera.orthographicSize = newSize;
+        float newFOV = Mathf.Lerp(myCamera.fieldOfView, targetFOV, zoomRate * Time.deltaTime);
+        myCamera.fieldOfView = newFOV;
     }
 
     public void ZoomIn()
@@ -38,15 +44,21 @@ public class CameraScript : MonoBehaviour
     public void ZoomIn(Transform target)
     {
         targetPosition = target;
-        targetCameraSize = 3;
+        targetFOV = smallFOV;
+
+        Invoke("ReturnToPlayer", 10f);
     }
     public void ZoomIn(Transform target, bool instantOut)
     {
         if (instantOut)
         {
-            transform.position = target.position;
-            myCamera.orthographicSize = 3;
-        } else
+            targetPosition = target;
+            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
+            myCamera.fieldOfView = smallFOV;
+
+            Invoke("ReturnToPlayer", 10f);
+        }
+        else
         {
             ZoomIn(target);
         }
@@ -59,6 +71,16 @@ public class CameraScript : MonoBehaviour
     public void ZoomOut(Transform target)
     {
         targetPosition = target;
-        targetCameraSize = 5;
+        targetFOV = largeFOV;
+
+        Invoke("ReturnToPlayer", 10f);
+    }
+
+    public void ReturnToPlayer()
+    {
+        maxOffset = defaultMaxOffset;
+        ZoomOut(playerTransform);
+
+        CancelInvoke("ReturnToPlayer");
     }
 }

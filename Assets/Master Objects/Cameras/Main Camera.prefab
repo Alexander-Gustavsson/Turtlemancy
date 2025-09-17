@@ -68,8 +68,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 1
+  field of view: 50
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -154,3 +154,4 @@ MonoBehaviour:
   zoomRate: 0
   maxOffset: {x: 2, y: 1, z: -10}
   offset: {x: 0, y: 0, z: -10}
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0}

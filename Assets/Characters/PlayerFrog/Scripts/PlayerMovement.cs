@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,11 +10,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float playerAcceleration;
     [SerializeField] private float jumpForce;
     [SerializeField] private int maxHealth;
-    [SerializeField] private int applesCollected;
+    [SerializeField] public int appleCounter;
+    public List<GameObject> collectedApples;
+    public List<GameObject> enemiesKilled;
 
-    private Vector3 respawnPosition;
+    public Vector3 respawnPosition;
     [SerializeField] private float groundRayDistance;
     [SerializeField] private Color greenHealth, redHealth;
+    [SerializeField] private AudioClip pickupSound;
+    [SerializeField] private AudioClip[] jumpSound;
+    [SerializeField] private float audioScaler;
+    [SerializeField] private GameObject applesParticle;
+    [SerializeField] private GameObject jumpParticle;
 
     private Rigidbody2D body; // References
     private Slider healthSlider;
@@ -24,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     private Transform leftFoot;
     private Transform rightFoot;
     private Animator anim;
+    private AudioSource audioPlayer;
     private CameraScript cameraScript;
 
     private float horizontalInput; 
@@ -39,10 +48,11 @@ public class PlayerMovement : MonoBehaviour
         healthSlider = GameObject.Find("Canvas").transform.Find("Slider_Health").gameObject.GetComponent<Slider>();
         healthBarFill = healthSlider.transform.Find("Fill Area").transform.Find("Fill").GetComponent<Image>();
         appleText = GameObject.Find("Canvas").transform.Find("Text_Apples").GetComponent<TMP_Text>();
-        groundLayer = LayerMask.GetMask("Ground");
+        groundLayer = LayerMask.GetMask("Ground", "Platform");
         leftFoot = transform.Find("LeftFoot");
         rightFoot = transform.Find("RightFoot");
         anim = GetComponent<Animator>();
+        audioPlayer = GetComponent<AudioSource>();
         cameraScript = GameObject.Find("Main Camera").GetComponent<CameraScript>();
         respawnPosition = transform.position;
 
@@ -55,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         isGrounded = CheckGrounded();
+        float horizontalVelocity = body.linearVelocityX;
 
         anim.SetFloat("Horizontal Velocity", Mathf.Abs(body.linearVelocityX));
         anim.SetFloat("Vertical Velocity", body.linearVelocityY);
@@ -84,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            body.AddForceY(jumpForce, ForceMode2D.Impulse);
+            Jump();
         }
     }
     void FixedUpdate()
@@ -102,15 +113,38 @@ public class PlayerMovement : MonoBehaviour
     {
         if(other.CompareTag("Apple"))
         {
-            applesCollected++;
+            appleCounter++;
             UpdateAppleText();
-            Destroy(other.gameObject);
+            collectedApples.Add(other.gameObject);
+            other.gameObject.SetActive(false);
+
+            Instantiate(applesParticle, other.transform.position, Quaternion.identity);
+
+            audioPlayer.pitch = Random.Range(0.8f, 1.2f);
+            audioPlayer.PlayOneShot(pickupSound, audioScaler);
+        }
+
+
+        if (other.CompareTag("HealthPickup") && currentHealth < maxHealth)
+        {
+            int restoredHealth = other.GetComponent<HealthPickup>().health;
+            currentHealth += restoredHealth;
+            UpdateHealthBar();
+            other.gameObject.SetActive(false);
+
+            audioPlayer.pitch = Random.Range(0.8f, 1.2f);
+            audioPlayer.PlayOneShot(pickupSound, audioScaler);
+
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
         }
     }
 
     private void UpdateAppleText()
     {
-        appleText.text = "Apples: " + applesCollected;
+        appleText.text = "Apples: " + appleCounter;
     }
     private bool CheckGrounded()
     {
@@ -151,8 +185,34 @@ public class PlayerMovement : MonoBehaviour
         body.linearVelocity = Vector2.zero;
         cameraScript.ZoomIn(transform, true);
         UpdateHealthBar();
+
+        foreach (Transform child in GameObject.Find("Apples").transform)
+        {
+            if (child.gameObject.CompareTag("Apple"))
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
+
+        foreach (GameObject enemy in enemiesKilled)
+        {
+            enemy.SetActive(true);
+        }
+
+        appleCounter = 0;
+        UpdateAppleText();
+        
     }
 
+    private void Jump()
+    {
+        body.AddForceY(jumpForce, ForceMode2D.Impulse);
+
+        audioPlayer.pitch = Random.Range(0.8f, 1.2f);
+        audioPlayer.PlayOneShot(jumpSound[Random.Range(0, 3)], audioScaler);
+
+        Instantiate(jumpParticle, transform.position, Quaternion.identity);
+    }
     public void TakeKnockback(Vector2 knockbackForce)
     {
         isStunned = true;

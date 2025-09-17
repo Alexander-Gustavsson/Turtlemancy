@@ -6,6 +6,8 @@ TagManager:
   tags:
   - EnemyBlocker
   - Apple
+  - HealthPickup
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Player
   - Ground
   - Enemy
-  - 
+  - Platform
   - 
   - 
   - 
@@ -40,8 +42,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 348420299
+    locked: 0
+  - name: Non-interactible
+    uniqueID: 3635855121
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 1881183237
     locked: 0
   m_RenderingLayers:
   - Default

@@ -53,6 +53,8 @@ MonoBehaviour:
   bounceForce: 8
   knockback: 6
   stunOnHit: 0.2
+  anim: {fileID: -5143640658038001974}
+  blood: {fileID: 8826446635361670827, guid: d2fa2589cefa9ee4889f4b92d009e22a, type: 3}
 --- !u!212 &8209966225635850946
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -155,7 +157,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!58 &6962206898814838117
 CircleCollider2D:
@@ -191,7 +193,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
 --- !u!61 &3434885036378781443
 BoxCollider2D:
@@ -227,10 +229,10 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 1.1}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1.1875, y: 1.0625}
     newSize: {x: 1.1875, y: 1.0625}
     adaptiveTilingThreshold: 0.5
